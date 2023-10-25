@@ -8,6 +8,8 @@ import (
 	"gorm.io/gorm"
 )
 
+const id = "id"
+
 type Handler struct {
 	db *gorm.DB
 }
@@ -50,7 +52,7 @@ func (h *Handler) CreateBookHandler(c *gin.Context) {
 }
 
 func (h *Handler) DeleteBookHandler(c *gin.Context) {
-	id := c.Param("id")
+	id := c.Param(id)
 
 	if result := h.db.Delete(&book.Book{}, id); result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
