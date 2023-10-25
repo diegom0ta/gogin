@@ -11,6 +11,11 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	books  = "/books"
+	bookId = "/books/:id"
+)
+
 var ErrFailedToConnect = errors.New("failed to connect database")
 
 func main() {
@@ -25,9 +30,9 @@ func main() {
 
 	r := gin.New()
 
-	r.GET("/books", handler.ListBooksHandler)
-	r.POST("/books", handler.CreateBookHandler)
-	r.DELETE("/books/:id", handler.DeleteBookHandler)
+	r.GET(books, handler.ListBooksHandler)
+	r.POST(books, handler.CreateBookHandler)
+	r.DELETE(bookId, handler.DeleteBookHandler)
 
 	r.Run()
 }
