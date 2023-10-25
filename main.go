@@ -1,6 +1,9 @@
 package main
 
 import (
+	"errors"
+	"log"
+
 	"github.com/diegom0ta/gogin/book"
 	"github.com/diegom0ta/gogin/handler"
 	"github.com/gin-gonic/gin"
@@ -8,11 +11,13 @@ import (
 	"gorm.io/gorm"
 )
 
+var ErrFailedToConnect = errors.New("failed to connect database")
+
 func main() {
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 
 	if err != nil {
-		panic("failed to connect database")
+		log.Println(ErrFailedToConnect)
 	}
 
 	db.AutoMigrate(&book.Book{})
