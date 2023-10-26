@@ -32,13 +32,13 @@ func main() {
 		log.Println(ErrMigrationFailed)
 	}
 
-	handler := handler.NewHandler(db)
+	h := handler.NewHandler(db)
 
 	r := gin.New()
 
-	r.GET(books, handler.ListBooksHandler)
-	r.POST(books, handler.CreateBookHandler)
-	r.DELETE(bookId, handler.DeleteBookHandler)
+	r.GET(books, h.ListBooksHandler)
+	r.POST(books, h.CreateBookHandler)
+	r.DELETE(bookId, h.DeleteBookHandler)
 
 	r.Run()
 }
