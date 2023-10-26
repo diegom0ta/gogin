@@ -16,7 +16,10 @@ const (
 	bookId = "/books/:id"
 )
 
-var ErrFailedToConnect = errors.New("failed to connect database")
+var (
+	ErrFailedToConnect = errors.New("failed to connect database")
+	ErrMigrationFailed = errors.New("database migration failed")
+)
 
 func main() {
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
@@ -24,7 +27,10 @@ func main() {
 		log.Println(ErrFailedToConnect)
 	}
 
-	db.AutoMigrate(&book.Book{})
+	err = db.AutoMigrate(&book.Book{})
+	if err != nil {
+		log.Println(ErrMigrationFailed)
+	}
 
 	handler := handler.NewHandler(db)
 
