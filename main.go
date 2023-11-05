@@ -6,6 +6,7 @@ import (
 
 	"github.com/diegom0ta/gogin/book"
 	"github.com/diegom0ta/gogin/handler"
+	"github.com/diegom0ta/gogin/user"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -14,6 +15,9 @@ import (
 const (
 	books  = "/books"
 	bookId = "/books/:id"
+	login  = "/login"
+	root   = "/"
+	testDb = "test.db"
 )
 
 var (
@@ -22,12 +26,12 @@ var (
 )
 
 func main() {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(testDb), &gorm.Config{})
 	if err != nil {
 		log.Println(ErrFailedToConnect)
 	}
 
-	err = db.AutoMigrate(&book.Book{})
+	err = db.AutoMigrate(&user.User{}, &book.Book{})
 	if err != nil {
 		log.Println(ErrMigrationFailed)
 	}
@@ -36,9 +40,13 @@ func main() {
 
 	r := gin.New()
 
-	r.GET(books, h.ListBooksHandler)
-	r.POST(books, h.CreateBookHandler)
-	r.DELETE(bookId, h.DeleteBookHandler)
+	r.POST(login, h.LoginHandler)
+
+	protected := r.Group(root, h.AuthMid)
+
+	protected.GET(books, h.ListBooksHandler)
+	protected.POST(books, h.CreateBookHandler)
+	protected.DELETE(bookId, h.DeleteBookHandler)
 
 	r.Run()
 }
